@@ -13,7 +13,6 @@ const Navbar = () => {
     { path: "/", label: "Home" },
     { path: "/about", label: "About" },
     { path: "/contact", label: "Contact" },
-    { path: "/login", label: "Login" },
   ];
 
   const links = navLinks.map((link) => (
@@ -33,21 +32,30 @@ const Navbar = () => {
 
   return (
     <nav className="bg-white shadow-md fixed w-full z-50">
-      <div className="max-w-7xl mx-auto px-4 flex justify-between items-center h-16">
-        {/* Logo */}
+      <div className="container mx-auto flex justify-between items-center h-16">
+        {/* Left: Logo */}
         <Link to="/" className="text-2xl font-bold text-blue-600">
           MyLogo
         </Link>
 
-        {/* Desktop Links */}
-        <div className="hidden md:flex space-x-4">{links}</div>
+        {/* Center: Links (hidden on mobile) */}
+        <div className="hidden md:flex space-x-6">{links}</div>
 
-        {/* User Info */}
-        {user && (
-          <span className="hidden md:block text-gray-600">
-            Welcome, {user.name}
-          </span>
-        )}
+        {/* Right: Login Button or User */}
+        <div className="hidden md:flex">
+          {user ? (
+            <span className="text-gray-700 font-medium">
+              Welcome, {user.name}
+            </span>
+          ) : (
+            <Link
+              to="/login"
+              className="px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700 transition"
+            >
+              Login
+            </Link>
+          )}
+        </div>
 
         {/* Mobile Menu Button */}
         <div className="md:hidden">
@@ -64,11 +72,18 @@ const Navbar = () => {
         }`}
       >
         <div className="flex flex-col p-4 space-y-2">{links}</div>
-        {user && (
-          <span className="block px-4 py-2 text-gray-600">
-            Welcome, {user.name}
-          </span>
-        )}
+        <div className="px-4 py-2">
+          {user ? (
+            <span className="text-gray-700">Welcome, {user.name}</span>
+          ) : (
+            <Link
+              to="/login"
+              className="block px-4 py-2 rounded-md bg-blue-600 text-white text-center hover:bg-blue-700 transition"
+            >
+              Login
+            </Link>
+          )}
+        </div>
       </div>
     </nav>
   );
