@@ -1,7 +1,10 @@
-import React from "react";
+import React, { use } from "react";
 import { useForm } from "react-hook-form";
+import { AuthContext } from "../../context/AuthContext";
 
 const Register = () => {
+  const { createUser, updateUser } = use(AuthContext);
+  
   const {
     register,
     handleSubmit,
@@ -37,9 +40,7 @@ const Register = () => {
               className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
             />
             {errors.name && (
-              <p className="text-red-500 text-sm mt-1">
-                {errors.name.message}
-              </p>
+              <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>
             )}
           </div>
 
@@ -71,7 +72,10 @@ const Register = () => {
               placeholder="Enter your password"
               {...register("password", {
                 required: "Password is required",
-                minLength: { value: 6, message: "Password must be at least 6 characters" },
+                minLength: {
+                  value: 6,
+                  message: "Password must be at least 6 characters",
+                },
               })}
               className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
             />
