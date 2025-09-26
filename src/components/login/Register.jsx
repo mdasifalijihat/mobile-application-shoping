@@ -1,10 +1,13 @@
-import React, { use } from "react";
 import { useForm } from "react-hook-form";
 import { AuthContext } from "../../context/AuthContext";
+import Swal from "sweetalert2";
+import { useNavigate } from "react-router";
+import { useContext } from "react";
 
 const Register = () => {
-  const { createUser, updateUser } = use(AuthContext);
-  
+  const { createUser, updateUser } = useContext(AuthContext);
+  const navigate = useNavigate();
+
   const {
     register,
     handleSubmit,
@@ -12,11 +15,36 @@ const Register = () => {
     formState: { errors },
   } = useForm();
 
-  const onSubmit = (data) => {
-    console.log("Register Data:", data);
-  };
-
   const password = watch("password");
+
+  const onSubmit = async (data) => {
+    try {
+      // createUser comes from AuthContext (firebase/auth or custom API)
+      const result = await createUser(data.email, data.password);
+
+      // update user profile (optional: name/photo update)
+      await updateUser({ displayName: data.name });
+
+      // success alert
+      Swal.fire({
+        title: "Registration Successful!",
+        text: "Welcome to Food App",
+        icon: "success",
+        confirmButtonText: "Go Home",
+      }).then(() => {
+        navigate("/"); // go to homepage
+      });
+
+      console.log("Register Data:", result.user);
+    } catch (err) {
+      Swal.fire({
+        title: "Error",
+        text: err.message,
+        icon: "error",
+        confirmButtonText: "Try Again",
+      });
+    }
+  };
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100">

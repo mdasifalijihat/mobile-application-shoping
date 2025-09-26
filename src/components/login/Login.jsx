@@ -1,7 +1,12 @@
-import React from "react";
+import React, { use } from "react";
 import { useForm } from "react-hook-form";
+import { AuthContext } from "../../context/AuthContext";
+import { useNavigate } from "react-router";
 
 const Login = () => {
+
+    const { signInUser } = use(AuthContext);
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
