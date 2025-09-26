@@ -1,20 +1,26 @@
-import React, { use } from "react";
+import React, { useContext } from "react";
 import { useForm } from "react-hook-form";
 import { AuthContext } from "../../context/AuthContext";
 import { useNavigate } from "react-router";
 
 const Login = () => {
-
-    const { signInUser } = use(AuthContext);
+  const { loginUser } = useContext(AuthContext); 
   const navigate = useNavigate();
+
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     console.log("Login Data:", data);
+    try {
+      await loginUser(data.email, data.password); 
+      navigate("/");
+    } catch (error) {
+      console.error("Login failed:", error.message);
+    }
   };
 
   return (
