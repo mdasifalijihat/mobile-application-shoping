@@ -1,13 +1,36 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Link, useLocation } from "react-router";
-import { FiMenu, FiX } from "react-icons/fi";
+import { FiMenu, FiX, FiUser } from "react-icons/fi";
+import { AuthContext } from "../../context/AuthContext";
+import Swal from "sweetalert2";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [user, setUser] = useState(null);
+  const { user, logoutUser } = useContext(AuthContext) || {};
   const location = useLocation();
 
   const toggleMenu = () => setIsOpen(!isOpen);
+
+  // ✅ handle logout with sweetalert
+  const handleLogout = () => {
+    logoutUser()
+      .then(() => {
+        Swal.fire({
+          icon: "success",
+          title: "Logged out!",
+          text: "You have been successfully logged out.",
+          timer: 2000,
+          showConfirmButton: false,
+        });
+      })
+      .catch((error) => {
+        Swal.fire({
+          icon: "error",
+          title: "Logout Failed",
+          text: error.message,
+        });
+      });
+  };
 
   const navLinks = [
     { path: "/", label: "Home" },
@@ -41,12 +64,21 @@ const Navbar = () => {
         {/* Center: Links (hidden on mobile) */}
         <div className="hidden md:flex space-x-6">{links}</div>
 
-        {/* Right: Login Button or User */}
-        <div className="hidden md:flex">
+        {/* Right: Profile or Login */}
+        <div className="hidden md:flex items-center space-x-4">
           {user ? (
-            <span className="text-gray-700 font-medium">
-              Welcome, {user.name}
-            </span>
+            <div className="flex items-center space-x-2">
+              <FiUser className="text-2xl text-gray-700" />
+              <span className="text-gray-700 font-medium">
+                {user.displayName || "User"}
+              </span>
+              <button
+                onClick={handleLogout}
+                className="px-3 py-1 rounded-md bg-red-500 text-white hover:bg-red-600 transition"
+              >
+                Logout
+              </button>
+            </div>
           ) : (
             <Link
               to="/login"
@@ -74,7 +106,16 @@ const Navbar = () => {
         <div className="flex flex-col p-4 space-y-2">{links}</div>
         <div className="px-4 py-2">
           {user ? (
-            <span className="text-gray-700">Welcome, {user.name}</span>
+            <div className="flex items-center space-x-2">
+              <FiUser className="text-2xl text-gray-700" />
+              <span className="text-gray-700">{user.displayName || "User"}</span>
+              <button
+                onClick={handleLogout}
+                className="ml-2 px-3 py-1 rounded-md bg-red-500 text-white hover:bg-red-600 transition"
+              >
+                Logout
+              </button>
+            </div>
           ) : (
             <Link
               to="/login"
